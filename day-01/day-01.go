@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	// TODO: Load input from txt file, loop through each line, count the amount of times it's greater than the prev. measurement
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)

@@ -42,9 +42,13 @@ func main() {
 		measurementsCount++
 
 		previousWindowSum = sum(measurementWindow)
+		// Chop off the first element of slice, and add the latest measurement to the end
+		// (so slice size of 3 never changes)
 		measurementWindow = append(measurementWindow[1:], latestMeasurement)
 		latestWindowSum = sum(measurementWindow)
 
+		// Sliding window is 3 measurements wide
+		// We can only start comparing windows once we have had a full window
 		if measurementsCount > 3 {
 			if latestWindowSum > previousWindowSum {
 				increasedCount++

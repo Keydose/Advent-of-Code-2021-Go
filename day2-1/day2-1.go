@@ -9,7 +9,31 @@ import (
 	"strings"
 )
 
+type Position struct {
+	x int
+	y int
+}
+
+func moveSubmarine(instruction string, submarinePosition *Position) {
+	instructionParts := strings.Split(instruction, " ")
+	direction := instructionParts[0]
+	magnitude, err := strconv.Atoi(instructionParts[1])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if direction == "up" {
+		submarinePosition.y -= magnitude
+	} else if direction == "down" {
+		submarinePosition.y += magnitude
+	} else if direction == "forward" {
+		submarinePosition.x += magnitude
+	}
+}
+
 func main() {
+	submarinePosition := Position{x: 0, y: 0}
+
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -17,26 +41,10 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	deltaX := 0
-	deltaY := 0
 	for scanner.Scan() {
 		instruction := scanner.Text()
-
-		instructionParts := strings.Split(instruction, " ")
-		direction := instructionParts[0]
-		magnitude, err := strconv.Atoi(instructionParts[1])
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if direction == "up" {
-			deltaY -= magnitude
-		} else if direction == "down" {
-			deltaY += magnitude
-		} else if direction == "forward" {
-			deltaX += magnitude
-		}
+		moveSubmarine(instruction, &submarinePosition)
 	}
 
-	fmt.Println(deltaX * deltaY)
+	fmt.Println(submarinePosition.x * submarinePosition.y)
 }

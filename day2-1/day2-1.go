@@ -9,12 +9,30 @@ import (
 	"strings"
 )
 
-type Position struct {
+type Moveable interface {
+	move(deltaX int, deltaY int)
+	Position() Coordinates
+}
+
+type Coordinates struct {
 	x int
 	y int
 }
 
-func moveSubmarine(instruction string, submarinePosition *Position) {
+type Submarine struct {
+	position Coordinates
+}
+
+func (s *Submarine) move(deltaCoords Coordinates) {
+	s.position.x += deltaCoords.x
+	s.position.y += deltaCoords.y
+}
+
+func (s Submarine) Position() Coordinates {
+	return s.position
+}
+
+func parseMovementInstruction(instruction string) Coordinates {
 	instructionParts := strings.Split(instruction, " ")
 	direction := instructionParts[0]
 	magnitude, err := strconv.Atoi(instructionParts[1])
@@ -23,11 +41,14 @@ func moveSubmarine(instruction string, submarinePosition *Position) {
 	}
 
 	if direction == "up" {
-		submarinePosition.y -= magnitude
+		return Coordinates{x: 0, y: -magnitude}
 	} else if direction == "down" {
-		submarinePosition.y += magnitude
+		return Coordinates{x: 0, y: magnitude}
 	} else if direction == "forward" {
-		submarinePosition.x += magnitude
+		return Coordinates{x: magnitude, y: 0}
+	} else {
+		// TODO: Figure out how to throw an exception instead?
+		return Coordinates{x: 0, y: 0}
 	}
 }
 
@@ -39,11 +60,13 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	submarinePosition := Position{x: 0, y: 0}
+	submarine := Submarine{position: Coordinates{x: 0, y: 0}}
 	for scanner.Scan() {
 		instruction := scanner.Text()
-		moveSubmarine(instruction, &submarinePosition)
+		submarine.move(parseMovementInstruction(instruction))
 	}
+
+	submarinePosition := submarine.Position()
 
 	fmt.Println(submarinePosition.x * submarinePosition.y)
 }

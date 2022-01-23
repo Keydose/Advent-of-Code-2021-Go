@@ -66,6 +66,7 @@ func main() {
 		movementInstruction, err := parseMovementInstruction(scanner.Text())
 		if err != nil {
 			log.Fatal(err)
+			continue
 		}
 		submarine.move(*movementInstruction)
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -32,23 +33,23 @@ func (s Submarine) Position() Coordinates {
 	return s.position
 }
 
-func parseMovementInstruction(instruction string) Coordinates {
+func parseMovementInstruction(instruction string) (*Coordinates, error) {
 	instructionParts := strings.Split(instruction, " ")
 	direction := instructionParts[0]
 	magnitude, err := strconv.Atoi(instructionParts[1])
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.New("magnitude not an integer")
 	}
 
 	if direction == "up" {
-		return Coordinates{x: 0, y: -magnitude}
+		return &Coordinates{x: 0, y: -magnitude}, nil
 	} else if direction == "down" {
-		return Coordinates{x: 0, y: magnitude}
+		return &Coordinates{x: 0, y: magnitude}, nil
 	} else if direction == "forward" {
-		return Coordinates{x: magnitude, y: 0}
+		return &Coordinates{x: magnitude, y: 0}, nil
 	} else {
 		// TODO: Figure out how to throw an exception instead?
-		return Coordinates{x: 0, y: 0}
+		return nil, errors.New("unrecognised direction")
 	}
 }
 
@@ -62,8 +63,11 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	submarine := Submarine{position: Coordinates{x: 0, y: 0}}
 	for scanner.Scan() {
-		instruction := scanner.Text()
-		submarine.move(parseMovementInstruction(instruction))
+		movementInstruction, err := parseMovementInstruction(scanner.Text())
+		if err != nil {
+			log.Fatal(err)
+		}
+		submarine.move(*movementInstruction)
 	}
 
 	submarinePosition := submarine.Position()

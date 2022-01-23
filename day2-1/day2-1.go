@@ -48,7 +48,6 @@ func parseMovementInstruction(instruction string) (*Coordinates, error) {
 	} else if direction == "forward" {
 		return &Coordinates{x: magnitude, y: 0}, nil
 	} else {
-		// TODO: Figure out how to throw an exception instead?
 		return nil, errors.New("unrecognised direction in instruction: " + instruction)
 	}
 }

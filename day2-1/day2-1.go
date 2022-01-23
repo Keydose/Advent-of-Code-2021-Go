@@ -53,7 +53,7 @@ func parseMovementInstruction(instruction string) Coordinates {
 }
 
 func main() {
-	file, err := os.Open("input.txt")
+	file, err := os.Open("movement_instructions.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

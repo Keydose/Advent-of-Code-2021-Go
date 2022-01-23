@@ -32,8 +32,6 @@ func moveSubmarine(instruction string, submarinePosition *Position) {
 }
 
 func main() {
-	submarinePosition := Position{x: 0, y: 0}
-
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -41,6 +39,7 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+	submarinePosition := Position{x: 0, y: 0}
 	for scanner.Scan() {
 		instruction := scanner.Text()
 		moveSubmarine(instruction, &submarinePosition)

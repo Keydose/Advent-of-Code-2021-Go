@@ -38,7 +38,7 @@ func parseMovementInstruction(instruction string) (*Coordinates, error) {
 	direction := instructionParts[0]
 	magnitude, err := strconv.Atoi(instructionParts[1])
 	if err != nil {
-		return nil, errors.New("magnitude not an integer")
+		return nil, errors.New("magnitude not an integer in instruction: " + instruction)
 	}
 
 	if direction == "up" {
@@ -49,7 +49,7 @@ func parseMovementInstruction(instruction string) (*Coordinates, error) {
 		return &Coordinates{x: magnitude, y: 0}, nil
 	} else {
 		// TODO: Figure out how to throw an exception instead?
-		return nil, errors.New("unrecognised direction")
+		return nil, errors.New("unrecognised direction in instruction: " + instruction)
 	}
 }
 
@@ -65,7 +65,7 @@ func main() {
 	for scanner.Scan() {
 		movementInstruction, err := parseMovementInstruction(scanner.Text())
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 			continue
 		}
 		submarine.move(*movementInstruction)
